@@ -1,0 +1,101 @@
+/* Global Styles */
+
+/* @font-face {
+    font-family: '';
+    src: url('') format('truetype');
+    font-style: normal;
+} */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+button {
+    background: none;
+    border: none;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.1);
+}
+
+/* Modal Dialog */
+
+.modal {
+    padding: 25px;
+    border: none;
+    border-radius: 10px;
+    min-width: 300px;
+    margin: 10% auto;
+}
+
+dialog:-internal-dialog-in-top-layer::backdrop {
+    background-color: rgba(0,0,0,0.2) !important;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-modal {
+    width: 35px;
+    height: 35px;
+    font-size: 25px;
+    border: none;
+}
+
+/* Main Interface */
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    min-height: 100vh;
+}
+
+.side-bar {
+    padding: 30px !important;
+    background-color: #f3f3f3;
+}
+
+.side-bar h1 {
+    margin-bottom: 50px;
+}
+
+.filters {
+    margin-bottom: 50px;
+}
+
+.filters ul, .projects ul {
+    margin-top: 20px;
+    margin-left: 15px;
+    display: grid;
+    gap: 15px;
+    list-style: none;
+}
+
+.filters ul li button,
+.projects ul li button {
+    width: 100%;
+    padding: 10px;
+    text-align: start;
+}
+
+.projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#add-project {
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+}
+
+#content {
+    padding: 30px;
+}

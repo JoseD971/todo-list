@@ -6,6 +6,61 @@
     <title>ToDo List</title>
 </head>
 <body>
-    
+    <!-- ToDo Modal -->
+    <dialog id="todo-modal" class="modal">
+        <div class="modal-header">
+            <button type="button" class="close-modal">&times;</button>
+        </div>
+        <form id="todo-form">
+            
+        </form>  
+    </dialog> 
+
+    <!-- Main Content -->
+    <main class="container">
+        <aside class="side-bar">
+            <h1>ToDo List</h1>
+            <div class="filters">
+                <h4>Filters</h4>
+                <ul>
+                    <li>
+                        <button>All</button>
+                    </li>
+                    <li>
+                        <button>Today</button>
+                    </li>
+                    <li>
+                        <button>This week</button>
+                    </li>
+                    <li>
+                        <button>Completed</button>
+                    </li>
+                    <li>
+                        <button>Important</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="projects">
+                <div class="projects-header">
+                    <h4>Projects</h4>
+                    <button id="add-project" title="Add new project">&plus;</button>
+                </div>
+                <ul>
+                    <li>
+                        <button>Personal</button>
+                    </li>
+                    <li>
+                        <button>Work</button>
+                    </li>
+                    <li>
+                        <button>Life</button>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <div id="content">
+
+        </div>
+    </main>
 </body>
 </html>
