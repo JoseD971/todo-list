@@ -12,12 +12,14 @@
     box-sizing: border-box;
 }
 
-button {
+button, 
+select {
     background: none;
     border: none;
 }
 
-button:hover {
+button:hover,
+select:hover {
     cursor: pointer;
     background-color: rgba(0,0,0,0.1);
 }
@@ -48,7 +50,7 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     border: none;
 }
 
-/* Main Interface */
+/* Content */
 
 .container {
     display: grid;
@@ -98,4 +100,70 @@ dialog:-internal-dialog-in-top-layer::backdrop {
 
 #content {
     padding: 30px;
+}
+
+/* Main Panel */
+
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 15px;
+}
+
+.header, 
+.header span, 
+.options,
+.card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header {
+    justify-content: start;
+}
+
+.header span {
+    border: 1px solid #a1a1a1;
+    border-radius: 5px;
+    font-size: 25px;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    justify-content: center;
+}
+
+.options {
+    justify-content: end;
+    padding: 15px;
+    border-bottom: 1px solid #a1a1a1;
+}
+
+.new-task {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #a1a1a1;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.new-task svg {
+    width: 15px;
+    height: 15px;
+}
+
+.card {
+    padding: 15px;
+    border-bottom: 1px solid #c2c2c2;
+}
+
+.expand {
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    margin-left: auto;
 }
