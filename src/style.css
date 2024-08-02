@@ -1,15 +1,16 @@
 /* Global Styles */
 
-/* @font-face {
-    font-family: '';
-    src: url('') format('truetype');
+@font-face {
+    font-family: 'Roboto';
+    src: url('./resources/fonts/Roboto-Regular.ttf') format('truetype');
     font-style: normal;
-} */
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto';
 }
 
 button, 
@@ -30,8 +31,7 @@ select:hover {
     padding: 25px;
     border: none;
     border-radius: 10px;
-    min-width: 300px;
-    margin: 10% auto;
+    margin: auto;
 }
 
 dialog:-internal-dialog-in-top-layer::backdrop {
@@ -40,7 +40,9 @@ dialog:-internal-dialog-in-top-layer::backdrop {
 
 .modal-header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid #a1a1a1;
+    margin-bottom: 20px;
 }
 
 .close-modal {
@@ -48,6 +50,78 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     height: 35px;
     font-size: 25px;
     border: none;
+}
+
+/* Modal Form */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 15px;
+    font-style: italic;
+}
+
+.form-group input, 
+.form-group textarea {
+    font-size: 18px;
+}
+
+.form-group textarea {
+    resize: none;
+}
+
+#todo-title,
+#todo-priority,
+#todo-due-date {
+    border: none;
+    border-bottom: 1px solid #000000;
+}
+
+#todo-title:focus,
+#todo-priority:focus,
+#todo-due-date:focus,
+#todo-description {
+    outline: none;
+}
+
+.todo-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 15px;
+}
+
+.form-buttons button {
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 20px;
+    font-size: 20px;
+}
+
+#todo-form-reset {
+    background-color: #3564e6;
+    color: #ffffff;
+}
+
+#todo-form-save {
+    background-color: #3aab51;
+    color: #ffffff;
 }
 
 /* Content */

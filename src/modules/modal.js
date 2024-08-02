@@ -13,11 +13,11 @@ const Modal = (() => {
             todoModal.close();
         });
         
-        window.onclick = function(event) {
-            if (event.target == todoModal) {
-              todoModal.close();
-            }
-        }
+        // window.onclick = function(event) {
+        //     if (event.target == todoModal) {
+        //       todoModal.close();
+        //     }
+        // }
     }
 
     return {activate}

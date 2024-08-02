@@ -18,6 +18,8 @@ const Display = (() => {
         showWeek.addEventListener('click', week);
         showImportant.addEventListener('click', important);
         showCompleted.addEventListener('click', completed);
+
+        document.addEventListener('DOMContentLoaded', today);
     }
     
     const template = (title, number) => {
@@ -40,7 +42,7 @@ const Display = (() => {
                     </div>
                 </div>
                 <div id="list">
-                    
+                   
                 </div>
             </div>
         `;
