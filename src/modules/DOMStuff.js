@@ -1,4 +1,6 @@
 import Feature from "./feature.js";
+import Project from "./project.js";
+import Task from "./task.js";
 
 const DOMStuff = (() => {
 
@@ -32,6 +34,8 @@ const DOMStuff = (() => {
         addProjectBtn.addEventListener('click', Feature.newProject);
 
         document.addEventListener('DOMContentLoaded', Feature.today);
+
+        displayProjects();
     }
 
     const initModal = () => {
@@ -100,6 +104,20 @@ const DOMStuff = (() => {
 
     const getProjectName = () => {
         return document.getElementById('project-name').value;
+    }
+
+    const displayProjects = () => {
+        var projects = Project().projects;
+        const projectsList = document.getElementById('projects-list');
+
+        projectsList.innerHTML = ``;
+        projects.forEach((pr) => {
+            projectsList.innerHTML += `
+                <li>
+                    <button id="${pr.id}">${pr.name}</button>
+                </li>
+            `;
+        });
     }
 
     const getTaskInfo = () => {

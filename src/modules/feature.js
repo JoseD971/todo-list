@@ -46,8 +46,10 @@ const Feature = (() => {
 
     const newProject = () => {
         if(!valideForm('project')) return;
-        const projectName = document.getElementById('project-name').value;
-        console.log(projectName);
+        const name = document.getElementById('project-name').value;
+        var project = Project(name);
+        project.create(project.properties);
+        console.log(project.projects);
         DOMStuff.resetForm('project');
         DOMStuff.closeElement('project');
     }
