@@ -24,29 +24,44 @@ const Feature = (() => {
         DOMStuff.setTemplate('Completed', 6);
     }
 
-    const valideForm = () => {
-        var info = DOMStuff.getTaskInfo();
-        if (info.title == '') {
-            alert('PLease, complete the title!');
-            return false;
-        }
-        if (info.dueDate == '') {
-            alert('Please, complete the date!');
-            return false;
+    const valideForm = (type) => {
+        if (type == 'task') {
+            var info = DOMStuff.getTaskInfo();
+            if (info.title == '') {
+                alert('Please, complete the title!');
+                return false;
+            }
+            if (info.dueDate == '') {
+                alert('Please, complete the date!');
+                return false;
+            }
+        } else if (type == 'project') {
+            if(DOMStuff.getProjectName() == '') {
+                alert('Please, set a name for the project');
+                return false;
+            }
         }
         return true;
     }
 
+    const newProject = () => {
+        if(!valideForm('project')) return;
+        const projectName = document.getElementById('project-name').value;
+        console.log(projectName);
+        DOMStuff.resetForm('project');
+        DOMStuff.closeElement('project');
+    }
+
     const newTask = () => {
-        if(!valideForm()) return;
+        if(!valideForm('task')) return;
         var info = DOMStuff.getTaskInfo();
         var todo = new Task(info.title, info.description, info.dueDate, info.priority, info.taskChecked);
         console.log(todo);
-        DOMStuff.resetForm();
-        DOMStuff.closeModal();
+        DOMStuff.resetForm('task');
+        DOMStuff.closeElement('task');
     }
 
-    return {all, today, week, important, completed, newTask}
+    return {all, today, week, important, completed, newProject, newTask}
 })();
 
 export default Feature;

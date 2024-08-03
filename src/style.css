@@ -172,10 +172,45 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     align-items: center;
 }
 
-#add-project {
+#open-project-panel {
     width: 25px;
     height: 25px;
     font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#project-panel {
+    display:flex;
+    flex-direction:row;
+    border:1px solid grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#project-panel input {
+    width: 80%;
+    border:none;
+}
+
+#project-panel input:focus {
+    outline: none;
+}
+
+#project-panel button {
+    background-color: #f09f5d;
+    width: 20%;
+}
+
+#project-panel button svg {
+    width: 15px;
+    height: 15px;
+    fill: #ffffff;
+}
+
+.hide {
+    display: none !important;
 }
 
 #content {

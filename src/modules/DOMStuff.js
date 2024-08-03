@@ -10,6 +10,8 @@ const DOMStuff = (() => {
         const showCompleted = document.getElementById('show-completed');
         const resetBtn = document.getElementById('todo-form-reset');
         const saveBtn = document.getElementById('todo-form-save');
+        const projectPanelBtn = document.getElementById('open-project-panel');
+        const addProjectBtn = document.getElementById('add-project');
 
         showAll.addEventListener('click', Feature.all);
         showToday.addEventListener('click', Feature.today);
@@ -24,6 +26,10 @@ const DOMStuff = (() => {
             event.preventDefault();
             Feature.newTask();
         });
+        projectPanelBtn.addEventListener('click', () => {
+            closeElement('project');
+        });
+        addProjectBtn.addEventListener('click', Feature.newProject);
 
         document.addEventListener('DOMContentLoaded', Feature.today);
     }
@@ -49,8 +55,9 @@ const DOMStuff = (() => {
         // }
     }
 
-    const closeModal = () => {
-        document.getElementById('todo-modal').close();
+    const closeElement = (type) => {
+        if(type == 'task') document.getElementById('todo-modal').close();
+        if(type == 'project') document.getElementById('project-panel').classList.toggle('hide'); 
     }
 
     const setTemplate = (title, number) => {
@@ -86,8 +93,13 @@ const DOMStuff = (() => {
         initModal();
     }
 
-    const resetForm = () => {
-        document.getElementById('todo-form').reset();
+    const resetForm = (type) => {
+        if (type == 'task') document.getElementById('todo-form').reset();
+        if (type == 'project') document.getElementById('project-name').value = '';
+    }
+
+    const getProjectName = () => {
+        return document.getElementById('project-name').value;
     }
 
     const getTaskInfo = () => {
@@ -100,7 +112,7 @@ const DOMStuff = (() => {
         return {title, priority, dueDate, description, taskChecked}
     }
 
-    return {setEvents, closeModal, setTemplate, resetForm, getTaskInfo}
+    return {setEvents, closeElement, setTemplate, resetForm, getProjectName, getTaskInfo}
 })();
  
 export default DOMStuff;

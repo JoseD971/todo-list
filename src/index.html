@@ -73,7 +73,13 @@
             <div class="projects">
                 <div class="projects-header">
                     <h4>Projects</h4>
-                    <button id="add-project" title="Add new project">&plus;</button>
+                    <button type="button" id="open-project-panel" title="Add new project">&plus;</button>
+                </div>
+                <div id="project-panel" class="hide">
+                    <input type="text" id="project-name" minlength="1" maxlength="15" autocomplete="off">
+                    <button type="button" id="add-project">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus</title><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>
+                    </button>
                 </div>
                 <ul>
                     <li>
