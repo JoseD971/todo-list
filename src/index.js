@@ -1,4 +1,4 @@
 import './style.css';
-import Display from './modules/display';
+import DOMStuff from './modules/DOMStuff';
 
-Display.init();
+DOMStuff.setEvents();

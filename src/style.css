@@ -98,6 +98,12 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     gap: 10px;
 }
 
+.task-completed {
+    flex-direction: row !important;
+    justify-content: start !important;
+    gap: 25px !important;
+}
+
 .form-buttons {
     display: flex;
     justify-content: end;
