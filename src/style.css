@@ -159,8 +159,7 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     list-style: none;
 }
 
-.filters ul li button,
-.projects ul li button {
+.filters ul li button {
     width: 100%;
     padding: 10px;
     text-align: start;
@@ -207,6 +206,30 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     width: 15px;
     height: 15px;
     fill: #ffffff;
+}
+
+#projects-list li {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    align-items: center;
+}
+
+#projects-list li button {
+    padding: 10px;
+}
+
+.open-project {
+    grid-column: 1;
+    text-align: start;
+}
+
+.remove-project {
+    grid-column: 2;
+}
+
+.remove-project svg {
+    width: 15px;
+    height: 15px;
 }
 
 .hide {

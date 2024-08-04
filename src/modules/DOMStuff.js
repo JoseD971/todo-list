@@ -1,5 +1,5 @@
 import Feature from "./feature.js";
-import Project from "./project.js";
+import {Project, projects} from "./project.js";
 import Task from "./task.js";
 
 const DOMStuff = (() => {
@@ -46,6 +46,7 @@ const DOMStuff = (() => {
         //Modal
         newTodo.addEventListener("click", () => {
             todoModal.showModal();
+            document.getElementById('todo-title').focus();
         });
           
         clsTodo.addEventListener("click", () => {
@@ -61,7 +62,10 @@ const DOMStuff = (() => {
 
     const closeElement = (type) => {
         if(type == 'task') document.getElementById('todo-modal').close();
-        if(type == 'project') document.getElementById('project-panel').classList.toggle('hide'); 
+        if(type == 'project') {
+            document.getElementById('project-panel').classList.toggle('hide');
+            document.getElementById('project-name').focus();
+        } 
     }
 
     const setTemplate = (title, number) => {
@@ -107,17 +111,30 @@ const DOMStuff = (() => {
     }
 
     const displayProjects = () => {
-        var projects = Project().projects;
         const projectsList = document.getElementById('projects-list');
 
         projectsList.innerHTML = ``;
         projects.forEach((pr) => {
             projectsList.innerHTML += `
                 <li>
-                    <button id="${pr.id}">${pr.name}</button>
+                    <button class="open-project" id="${pr.id}">${pr.name}</button>
+                    <button class="remove-project" project-id="${pr.id}" title="Delete project"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" /></svg></button>
                 </li>
             `;
         });
+
+        setProjectEvents();
+    }
+
+    const setProjectEvents = () => {
+        const removeProjBtns =  document.getElementsByClassName('remove-project');
+        
+        for (let i = 0; i < removeProjBtns.length; i++) {
+            let e = removeProjBtns[i];
+            e.addEventListener('click', () => {
+                Feature.removeProject(e.getAttribute('project-id'));
+            });
+        }
     }
 
     const getTaskInfo = () => {
@@ -130,7 +147,7 @@ const DOMStuff = (() => {
         return {title, priority, dueDate, description, taskChecked}
     }
 
-    return {setEvents, closeElement, setTemplate, resetForm, getProjectName, getTaskInfo}
+    return {setEvents, closeElement, setTemplate, resetForm, getProjectName, displayProjects, setProjectEvents, getTaskInfo}
 })();
  
 export default DOMStuff;

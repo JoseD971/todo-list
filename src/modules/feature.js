@@ -1,5 +1,5 @@
 import Task from './task.js';
-import Project from './project.js';
+import {Project, projects} from './project.js';
 import DOMStuff from './DOMStuff.js';
 
 const Feature = (() => {
@@ -47,23 +47,35 @@ const Feature = (() => {
     const newProject = () => {
         if(!valideForm('project')) return;
         const name = document.getElementById('project-name').value;
-        var project = Project(name);
-        project.create(project.properties);
-        console.log(project.projects);
+        var project = Project().create(name);
+        console.log(projects);
+        DOMStuff.displayProjects();
         DOMStuff.resetForm('project');
         DOMStuff.closeElement('project');
+    }
+
+    const removeProject = (id) => {
+        let text = "All the tasks contained in this project will also be deleted, do you want to continue?";
+        if (confirm(text) != true) return;
+        projects.forEach((x) => {
+            if(x.id == id) {
+                var i = projects.indexOf(x);
+                projects.splice(i, 1);
+            }
+        });
+        DOMStuff.displayProjects();
     }
 
     const newTask = () => {
         if(!valideForm('task')) return;
         var info = DOMStuff.getTaskInfo();
-        var todo = new Task(info.title, info.description, info.dueDate, info.priority, info.taskChecked);
-        console.log(todo);
+        var task = new Task(info.title, info.description, info.dueDate, info.priority, info.taskChecked);
+        console.log(task);
         DOMStuff.resetForm('task');
         DOMStuff.closeElement('task');
     }
 
-    return {all, today, week, important, completed, newProject, newTask}
+    return {all, today, week, important, completed, newProject, removeProject, newTask}
 })();
 
 export default Feature;
