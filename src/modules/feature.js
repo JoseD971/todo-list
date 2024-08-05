@@ -1,4 +1,4 @@
-import Task from './task.js';
+import {Task, tasks} from './task.js';
 import {Project, projects} from './project.js';
 import DOMStuff from './DOMStuff.js';
 
@@ -6,22 +6,27 @@ const Feature = (() => {
 
     const all = () => {
         DOMStuff.setTemplate('All', 30);
+        DOMStuff.displayTasks(tasks);
     }
 
     const today = () => {
         DOMStuff.setTemplate('Today', 5);
+        DOMStuff.displayTasks(tasks);
     }
 
     const week = () => {
         DOMStuff.setTemplate('This Week', 12);
+        DOMStuff.displayTasks(tasks);
     }
 
     const important = () => {
         DOMStuff.setTemplate('Important', 3);
+        DOMStuff.displayTasks(tasks);
     }
 
     const completed = () => {
         DOMStuff.setTemplate('Completed', 6);
+        DOMStuff.displayTasks(tasks);
     }
 
     const valideForm = (type) => {
@@ -48,7 +53,6 @@ const Feature = (() => {
         if(!valideForm('project')) return;
         const name = document.getElementById('project-name').value;
         var project = Project().create(name);
-        console.log(projects);
         DOMStuff.displayProjects();
         DOMStuff.resetForm('project');
         DOMStuff.closeElement('project');
@@ -69,8 +73,9 @@ const Feature = (() => {
     const newTask = () => {
         if(!valideForm('task')) return;
         var info = DOMStuff.getTaskInfo();
-        var task = new Task(info.title, info.description, info.dueDate, info.priority, info.taskChecked);
+        var task = Task().create(info.title, info.description, info.dueDate, info.priority, info.taskChecked);
         console.log(task);
+        DOMStuff.displayTasks(tasks);
         DOMStuff.resetForm('task');
         DOMStuff.closeElement('task');
     }

@@ -1,6 +1,6 @@
 import Feature from "./feature.js";
 import {Project, projects} from "./project.js";
-import Task from "./task.js";
+import {Task, tasks} from "./task.js";
 
 const DOMStuff = (() => {
 
@@ -89,11 +89,7 @@ const DOMStuff = (() => {
                     </div>
                 </div>
                 <div id="list">
-                    <div class="card">
-                        <input type="checkbox" name="chckd">
-                        <p>Task number 1</p>
-                        <button title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
-                    </div>
+                    
                 </div>
             </div>
         `;
@@ -117,7 +113,7 @@ const DOMStuff = (() => {
         projects.forEach((pr) => {
             projectsList.innerHTML += `
                 <li>
-                    <button class="open-project" id="${pr.id}">${pr.name}</button>
+                    <button class="open-project" id="project-${pr.id}">${pr.name}</button>
                     <button class="remove-project" project-id="${pr.id}" title="Delete project"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" /></svg></button>
                 </li>
             `;
@@ -147,7 +143,22 @@ const DOMStuff = (() => {
         return {title, priority, dueDate, description, taskChecked}
     }
 
-    return {setEvents, closeElement, setTemplate, resetForm, getProjectName, displayProjects, setProjectEvents, getTaskInfo}
+    const displayTasks = (list) => {
+        const tasksList = document.getElementById('list');
+
+        tasksList.innerHTML = ``;
+        list.forEach((pr) => {
+            tasksList.innerHTML += `
+                <div class="card">
+                    <input type="checkbox" id="task-${pr.id}">
+                    <p>${pr.title}</p>
+                    <button title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
+                </div>
+            `;
+        });
+    }
+
+    return {setEvents, closeElement, setTemplate, resetForm, getProjectName, displayProjects, getTaskInfo, displayTasks}
 })();
  
 export default DOMStuff;

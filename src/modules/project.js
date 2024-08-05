@@ -15,16 +15,17 @@ var projects = [
 
 const Project = function() {
 
-    Project._counter = (Project._counter || 0) + 1;
+    var properties = {}
 
     const create = (name) => {
-        var properties = {
+        Project._counter = (Project._counter || 0) + 1;
+        properties = {
             id: Project._counter,
             name: name,
             tasks: [],
         }
         projects.push(properties);
-        console.log(projects);
+        return {properties}
     }
 
     // const listAll = () => {
