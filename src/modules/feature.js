@@ -63,11 +63,29 @@ const Feature = (() => {
 
     const newProject = () => {
         if(!valideForm('project')) return;
-        const name = document.getElementById('project-name').value;
-        var project = Project().create(name);
+        const name = DOMStuff.getProjectName();
+        Project().create(name);
         DOMStuff.displayProjects();
         DOMStuff.resetForm('project');
-        DOMStuff.closeElement('project');
+        DOMStuff.toggleElement('project');
+    }
+
+    const openProject = (id) => {
+        currentList = id;
+        const pr = projects.find((x) => x.id == id);
+        var list = search(currentList);
+        DOMStuff.setTemplate(pr.name, list.length);
+        DOMStuff.displayTasks(list);
+    }
+
+    const editProject = (id) => {
+        if(!valideForm('project')) return;
+        const name = DOMStuff.getProjectName();
+        let pr = projects.findIndex((x) => x.id === id);
+        projects[pr].name = name;
+        DOMStuff.displayProjects();
+        DOMStuff.resetForm('project');
+        DOMStuff.toggleElement('project');
     }
 
     const removeProject = (id) => {
@@ -75,10 +93,14 @@ const Feature = (() => {
         if (confirm(text) != true) return;
         projects.forEach((x) => {
             if(x.id == id) {
+                if(x.id == currentList) {
+                    today();
+                }
                 var i = projects.indexOf(x);
                 projects.splice(i, 1);
             }
         });
+        DOMStuff.toggleElement('project');
         DOMStuff.displayProjects();
     }
 
@@ -88,7 +110,7 @@ const Feature = (() => {
         Task().create(currentList, info.title, info.description, moment(info.dueDate).format('DD-MM-YYYY'), info.priority, info.taskChecked);
         filter(currentList);
         DOMStuff.resetForm('task');
-        DOMStuff.closeElement('task');
+        DOMStuff.toggleElement('task');
     }
 
     const filter = (value) => {
@@ -109,6 +131,7 @@ const Feature = (() => {
                 completed();
                 break;
             default:
+                search(value);
                 break;
         }
     }
@@ -137,7 +160,7 @@ const Feature = (() => {
         return found;
     }
 
-    return {all, today, week, important, completed, newProject, removeProject, newTask}
+    return {all, today, week, important, completed, newProject, editProject, removeProject, newTask, openProject}
 })();
 
 export default Feature;

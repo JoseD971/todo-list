@@ -13,7 +13,6 @@ const DOMStuff = (() => {
         const resetBtn = document.getElementById('todo-form-reset');
         const saveBtn = document.getElementById('todo-form-save');
         const projectPanelBtn = document.getElementById('open-project-panel');
-        const addProjectBtn = document.getElementById('add-project');
 
         showAll.addEventListener('click', Feature.all);
         showToday.addEventListener('click', Feature.today);
@@ -29,9 +28,8 @@ const DOMStuff = (() => {
             Feature.newTask();
         });
         projectPanelBtn.addEventListener('click', () => {
-            closeElement('project');
+            setActionType('add');
         });
-        addProjectBtn.addEventListener('click', Feature.newProject);
 
         document.addEventListener('DOMContentLoaded', Feature.today);
 
@@ -60,7 +58,7 @@ const DOMStuff = (() => {
         // }
     }
 
-    const closeElement = (type) => {
+    const toggleElement = (type) => {
         if(type == 'task') document.getElementById('todo-modal').close();
         if(type == 'project') {
             document.getElementById('project-panel').classList.toggle('hide');
@@ -78,7 +76,7 @@ const DOMStuff = (() => {
                     <span>${number}</span>
                 </div>
                 <div class="options">
-                    <button class="new-task" id="add-todo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus</title><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg> Add new task</button>
+                    <button class="new-task" id="add-todo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg> Add new task</button>
                     <div class="sort-button">
                         <label for="sort">Sort by</label>
                         <select name="sort" id="sort">
@@ -113,8 +111,11 @@ const DOMStuff = (() => {
         projects.forEach((pr) => {
             projectsList.innerHTML += `
                 <li>
-                    <button class="open-project" id="project-${pr.id}">${pr.name}</button>
-                    <button class="remove-project" project-id="${pr.id}" title="Delete project"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" /></svg></button>
+                    <button class="open-project" project-id="${pr.id}">${pr.name}</button>
+                    <div class="action-project-buttons">
+                        <button class="edit-project" project-id="${pr.id}" title="Edit project"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg></button>
+                        <button class="remove-project" project-id="${pr.id}" title="Delete project"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" /></svg></button>
+                    </div>
                 </li>
             `;
         });
@@ -123,12 +124,50 @@ const DOMStuff = (() => {
     }
 
     const setProjectEvents = () => {
-        const removeProjBtns =  document.getElementsByClassName('remove-project');
+        const openProjBtns = document.getElementsByClassName('open-project');
+        const editProjBtns = document.getElementsByClassName('edit-project');
+        const removeProjBtns = document.getElementsByClassName('remove-project');
+
+        for (let i = 0; i < openProjBtns.length; i++) {
+            let e = openProjBtns[i];
+            e.addEventListener('click', () => {
+                Feature.openProject(e.getAttribute('project-id'));
+            });
+        }
+
+        for (let i = 0; i < editProjBtns.length; i++) {
+            let e = editProjBtns[i];
+            let id = e.getAttribute('project-id');
+            e.addEventListener('click', () => {
+                let pr = projects.find((x) => x.id == id);
+                setActionType('edit', pr.name, pr.id);
+            });
+        }
         
         for (let i = 0; i < removeProjBtns.length; i++) {
             let e = removeProjBtns[i];
             e.addEventListener('click', () => {
                 Feature.removeProject(e.getAttribute('project-id'));
+            });
+        }
+    }
+
+    const setActionType = (type, value = '', id = '') => {
+        var actionProjectBtn = document.getElementById('action-project');
+        actionProjectBtn.replaceWith(actionProjectBtn.cloneNode(true));
+        actionProjectBtn = document.getElementById('action-project');
+        actionProjectBtn.setAttribute('action-type', type);
+        if(type === 'add') {
+            document.getElementById('project-name').value = '';
+            toggleElement('project');
+            actionProjectBtn.addEventListener('click', () => {
+                Feature.newProject();
+            });
+        } else if(type === 'edit') {
+            document.getElementById('project-name').value = value;
+            toggleElement('project');
+            actionProjectBtn.addEventListener('click', () => {
+                Feature.editProject(id);
             });
         }
     }
@@ -150,7 +189,7 @@ const DOMStuff = (() => {
         list.forEach((pr) => {
             tasksList.innerHTML += `
                 <div class="card">
-                    <input type="checkbox" id="task-${pr.id}">
+                    <input type="checkbox" id="task-${pr.id}" ${(pr.completed === true) ? 'checked' : ''}>
                     <p>${pr.title}</p>
                     <button title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
                 </div>
@@ -158,7 +197,7 @@ const DOMStuff = (() => {
         });
     }
 
-    return {setEvents, closeElement, setTemplate, resetForm, getProjectName, displayProjects, getTaskInfo, displayTasks}
+    return {setEvents, toggleElement, setTemplate, resetForm, getProjectName, displayProjects, getTaskInfo, displayTasks}
 })();
  
 export default DOMStuff;

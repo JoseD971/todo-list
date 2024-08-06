@@ -223,11 +223,13 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     text-align: start;
 }
 
-.remove-project {
+.action-project-buttons {
     grid-column: 2;
+    display: flex;
 }
 
-.remove-project svg {
+.remove-project svg,
+.edit-project svg {
     width: 15px;
     height: 15px;
 }
