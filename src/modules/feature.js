@@ -1,32 +1,44 @@
 import {Task, tasks} from './task.js';
 import {Project, projects} from './project.js';
 import DOMStuff from './DOMStuff.js';
+import moment from 'moment/moment.js';
+
+var currentList = 'today';
 
 const Feature = (() => {
 
     const all = () => {
-        DOMStuff.setTemplate('All', 30);
+        currentList = 'all';
+        DOMStuff.setTemplate('All', tasks.length);
         DOMStuff.displayTasks(tasks);
     }
 
     const today = () => {
-        DOMStuff.setTemplate('Today', 5);
-        DOMStuff.displayTasks(tasks);
+        currentList = 'today';
+        var today = search(moment().format('DD-MM-YYYY'));
+        DOMStuff.setTemplate('Today', today.length);
+        DOMStuff.displayTasks(today);
     }
 
     const week = () => {
-        DOMStuff.setTemplate('This Week', 12);
-        DOMStuff.displayTasks(tasks);
+        currentList = 'week';
+        var week = search(moment().week());
+        DOMStuff.setTemplate('This week', week.length);
+        DOMStuff.displayTasks(week);
     }
 
     const important = () => {
-        DOMStuff.setTemplate('Important', 3);
-        DOMStuff.displayTasks(tasks);
+        currentList = 'important';
+        var important = search('high');
+        DOMStuff.setTemplate('Important', important.length);
+        DOMStuff.displayTasks(important);
     }
 
     const completed = () => {
-        DOMStuff.setTemplate('Completed', 6);
-        DOMStuff.displayTasks(tasks);
+        currentList = 'completed';
+        var completed = search(true);
+        DOMStuff.setTemplate('Completed', completed.length);
+        DOMStuff.displayTasks(completed);
     }
 
     const valideForm = (type) => {
@@ -59,7 +71,7 @@ const Feature = (() => {
     }
 
     const removeProject = (id) => {
-        let text = "All the tasks contained in this project will also be deleted, do you want to continue?";
+        let text = 'All the tasks contained in this project will also be deleted, do you want to continue?';
         if (confirm(text) != true) return;
         projects.forEach((x) => {
             if(x.id == id) {
@@ -73,11 +85,56 @@ const Feature = (() => {
     const newTask = () => {
         if(!valideForm('task')) return;
         var info = DOMStuff.getTaskInfo();
-        var task = Task().create(info.title, info.description, info.dueDate, info.priority, info.taskChecked);
-        console.log(task);
-        DOMStuff.displayTasks(tasks);
+        Task().create(currentList, info.title, info.description, moment(info.dueDate).format('DD-MM-YYYY'), info.priority, info.taskChecked);
+        filter(currentList);
         DOMStuff.resetForm('task');
         DOMStuff.closeElement('task');
+    }
+
+    const filter = (value) => {
+        switch (value) {
+            case 'all':
+                all();
+                break;
+            case 'today':
+                today();
+                break;
+            case 'week':
+                week();
+                break;
+            case 'important':
+                important();
+                break;
+            case 'completed':
+                completed();
+                break;
+            default:
+                break;
+        }
+    }
+
+    const search = (value) => {
+        var found;
+ 
+        switch (currentList) {
+            case 'today':
+                found = tasks.filter((x) => x.dueDate === value);
+                break;
+            case 'week': 
+                found = tasks.filter((x) => moment(x.dueDate, 'DD-MM-YYYY').week() === value);
+                break;
+            case 'important':
+                found = tasks.filter((x) => x.priority === value);
+                break;
+            case 'completed':
+                found = tasks.filter((x) => x.completed === value);
+                break;
+            default:
+                found = tasks.filter((x) => x.project === value);
+                break;
+        }
+    
+        return found;
     }
 
     return {all, today, week, important, completed, newProject, removeProject, newTask}

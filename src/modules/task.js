@@ -1,4 +1,16 @@
-var tasks = [];
+import moment from "moment";
+
+var tasks = [
+    {
+        id: 'gs',
+        project: 'all',
+        title: 'Getting Started',
+        description: `This application allows you to create to-do's and separate them by projects to organize your day.`,
+        dueDate: moment().format('DD-MM-YYYY'),
+        priority: 'low',
+        completed: true,
+    }
+];
 
 const Task = function () {   
     // ToDo.counter = ToDo.counter ? ToDo.counter + 1 : 1;
@@ -6,9 +18,10 @@ const Task = function () {
 
     var properties = {}
 
-    const create = (title, description, dueDate, priority, completed) => {
+    const create = (project, title, description, dueDate, priority, completed) => {
         properties = {
             id: Task._counter,
+            project: project,
             title: title,
             description: description,
             dueDate: dueDate,
