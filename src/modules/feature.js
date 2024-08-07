@@ -9,35 +9,36 @@ const Feature = (() => {
 
     const all = () => {
         currentList = 'all';
-        DOMStuff.setTemplate('All', tasks.length);
+        DOMStuff.setTemplate('All', tasks.length, true);
         DOMStuff.displayTasks(tasks);
     }
 
     const today = () => {
         currentList = 'today';
-        var today = search(moment().format('DD-MM-YYYY'));
-        DOMStuff.setTemplate('Today', today.length);
+        var today = search(moment().format('YYYY-MM-DD'));
+        DOMStuff.setTemplate('Today', today.length, true);
         DOMStuff.displayTasks(today);
     }
 
     const week = () => {
         currentList = 'week';
         var week = search(moment().week());
-        DOMStuff.setTemplate('This week', week.length);
+        console.log(week);
+        DOMStuff.setTemplate('This week', week.length, true);
         DOMStuff.displayTasks(week);
     }
 
     const important = () => {
         currentList = 'important';
         var important = search('high');
-        DOMStuff.setTemplate('Important', important.length);
+        DOMStuff.setTemplate('Important', important.length, true);
         DOMStuff.displayTasks(important);
     }
 
     const completed = () => {
         currentList = 'completed';
         var completed = search(true);
-        DOMStuff.setTemplate('Completed', completed.length);
+        DOMStuff.setTemplate('Completed', completed.length, true);
         DOMStuff.displayTasks(completed);
     }
 
@@ -74,15 +75,18 @@ const Feature = (() => {
         currentList = id;
         const pr = projects.find((x) => x.id == id);
         var list = search(currentList);
-        DOMStuff.setTemplate(pr.name, list.length);
+        DOMStuff.setTemplate(pr.name, list.length, false);
         DOMStuff.displayTasks(list);
     }
 
     const editProject = (id) => {
         if(!valideForm('project')) return;
         const name = DOMStuff.getProjectName();
-        let pr = projects.findIndex((x) => x.id === id);
+        let pr = projects.findIndex((x) => x.id == id);
         projects[pr].name = name;
+        if(currentList == projects[pr].id) {
+            openProject(projects[pr].id);
+        }
         DOMStuff.displayProjects();
         DOMStuff.resetForm('project');
         DOMStuff.toggleElement('project');
@@ -107,33 +111,24 @@ const Feature = (() => {
     const newTask = () => {
         if(!valideForm('task')) return;
         var info = DOMStuff.getTaskInfo();
-        Task().create(currentList, info.title, info.description, moment(info.dueDate).format('DD-MM-YYYY'), info.priority, info.taskChecked);
-        filter(currentList);
+        Task().create(currentList, info.title, info.description, moment(info.dueDate).format('YYYY-MM-DD'), info.priority, info.taskChecked);
+        openProject(currentList);
         DOMStuff.resetForm('task');
         DOMStuff.toggleElement('task');
     }
 
-    const filter = (value) => {
-        switch (value) {
-            case 'all':
-                all();
-                break;
-            case 'today':
-                today();
-                break;
-            case 'week':
-                week();
-                break;
-            case 'important':
-                important();
-                break;
-            case 'completed':
-                completed();
-                break;
-            default:
-                search(value);
-                break;
-        }
+    const editTask = (id) => {
+        if(!valideForm('task')) return;
+        var info = DOMStuff.getTaskInfo();
+        let pr = tasks.findIndex((x) => x.id == id);
+        tasks[pr].title = info.title;
+        tasks[pr].description = info.description;
+        tasks[pr].dueDate = info.dueDate;
+        tasks[pr].priority = info.priority;
+        tasks[pr].completed = info.taskChecked;
+        openProject(currentList);
+        DOMStuff.resetForm('task');
+        DOMStuff.toggleElement('task');
     }
 
     const search = (value) => {
@@ -141,26 +136,26 @@ const Feature = (() => {
  
         switch (currentList) {
             case 'today':
-                found = tasks.filter((x) => x.dueDate === value);
+                found = tasks.filter((x) => x.dueDate == value);
                 break;
             case 'week': 
-                found = tasks.filter((x) => moment(x.dueDate, 'DD-MM-YYYY').week() === value);
+                found = tasks.filter((x) => moment(x.dueDate).week() == value);
                 break;
             case 'important':
-                found = tasks.filter((x) => x.priority === value);
+                found = tasks.filter((x) => x.priority == value);
                 break;
             case 'completed':
-                found = tasks.filter((x) => x.completed === value);
+                found = tasks.filter((x) => x.completed == value);
                 break;
             default:
-                found = tasks.filter((x) => x.project === value);
+                found = tasks.filter((x) => x.project == value);
                 break;
         }
     
         return found;
     }
 
-    return {all, today, week, important, completed, newProject, editProject, removeProject, newTask, openProject}
+    return {all, today, week, important, completed, newProject, openProject, editProject, removeProject, newTask, editTask}
 })();
 
 export default Feature;

@@ -1,6 +1,7 @@
 import Feature from "./feature.js";
-import {Project, projects} from "./project.js";
-import {Task, tasks} from "./task.js";
+import {projects} from "./project.js";
+import {tasks} from "./task.js";
+import moment from "moment";
 
 const DOMStuff = (() => {
 
@@ -11,7 +12,6 @@ const DOMStuff = (() => {
         const showImportant = document.getElementById('show-important');
         const showCompleted = document.getElementById('show-completed');
         const resetBtn = document.getElementById('todo-form-reset');
-        const saveBtn = document.getElementById('todo-form-save');
         const projectPanelBtn = document.getElementById('open-project-panel');
 
         showAll.addEventListener('click', Feature.all);
@@ -21,11 +21,7 @@ const DOMStuff = (() => {
         showCompleted.addEventListener('click', Feature.completed);
         resetBtn.addEventListener('click', (evet) => {
             evet.preventDefault();
-            resetForm();
-        });
-        saveBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            Feature.newTask();
+            resetForm('task');
         });
         projectPanelBtn.addEventListener('click', () => {
             setActionType('add');
@@ -38,12 +34,16 @@ const DOMStuff = (() => {
 
     const initModal = () => {
         const todoModal = document.getElementById('todo-modal');
-        const newTodo = document.getElementById("add-todo");
-        const clsTodo = document.querySelector("#todo-modal .close-modal");
+        const newTodo = document.getElementById('add-todo');
+        const clsTodo = document.querySelector('#todo-modal .close-modal');
+        const modalTitle = document.getElementById('modal-title');
         
         //Modal
         newTodo.addEventListener("click", () => {
+            modalTitle.textContent = 'Add new task';
+            resetForm('task');
             todoModal.showModal();
+            setEventModal('add');
             document.getElementById('todo-title').focus();
         });
           
@@ -66,7 +66,7 @@ const DOMStuff = (() => {
         } 
     }
 
-    const setTemplate = (title, number) => {
+    const setTemplate = (title, number, filter) => {
         var content = document.getElementById('content');
         content.innerHTML = '';
         content.innerHTML = `
@@ -76,7 +76,7 @@ const DOMStuff = (() => {
                     <span>${number}</span>
                 </div>
                 <div class="options">
-                    <button class="new-task" id="add-todo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg> Add new task</button>
+                    ${(filter == false) ? '<button class="new-task" id="add-todo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg> Add new task</button>' : ''}
                     <div class="sort-button">
                         <label for="sort">Sort by</label>
                         <select name="sort" id="sort">
@@ -92,7 +92,7 @@ const DOMStuff = (() => {
             </div>
         `;
 
-        initModal();
+        if (filter == false) initModal();
     }
 
     const resetForm = (type) => {
@@ -157,13 +157,13 @@ const DOMStuff = (() => {
         actionProjectBtn.replaceWith(actionProjectBtn.cloneNode(true));
         actionProjectBtn = document.getElementById('action-project');
         actionProjectBtn.setAttribute('action-type', type);
-        if(type === 'add') {
+        if(type == 'add') {
             document.getElementById('project-name').value = '';
             toggleElement('project');
             actionProjectBtn.addEventListener('click', () => {
                 Feature.newProject();
             });
-        } else if(type === 'edit') {
+        } else if(type == 'edit') {
             document.getElementById('project-name').value = value;
             toggleElement('project');
             actionProjectBtn.addEventListener('click', () => {
@@ -189,12 +189,57 @@ const DOMStuff = (() => {
         list.forEach((pr) => {
             tasksList.innerHTML += `
                 <div class="card">
-                    <input type="checkbox" id="task-${pr.id}" ${(pr.completed === true) ? 'checked' : ''}>
+                    <input type="checkbox" ${(pr.completed == true) ? 'checked' : ''}>
                     <p>${pr.title}</p>
-                    <button title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
+                    <button task-id="${pr.id}" title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
                 </div>
             `;
         });
+
+        setTasksEvents();
+    }
+
+    const setTasksEvents = () => {
+        const editTaskBtns = document.getElementsByClassName('expand');
+        const todoModal = document.getElementById('todo-modal');
+        const modalTitle = document.getElementById('modal-title');
+        for (let i = 0; i < editTaskBtns.length; i++) {
+            let e = editTaskBtns[i];
+            e.addEventListener('click', () => {
+                modalTitle.textContent = 'Edit task';
+                expandEditModal(e.getAttribute('task-id'));
+                todoModal.showModal();
+                setEventModal('edit', e.getAttribute('task-id'));
+            });
+        }
+    }
+
+    const expandEditModal = (id) => {
+        var tks = tasks.find((x) => x.id == id);
+        document.getElementById('todo-title').value = tks.title;
+        document.getElementById('todo-priority').value = tks.priority;
+        var date = document.getElementById('todo-due-date').value = moment(tks.dueDate).format('YYYY-MM-DD');
+        console.log(tks.dueDate);
+        console.log(date);
+        document.getElementById('todo-description').value = tks.description;
+        document.getElementById('todo-completed').checked = tks.completed;
+    }
+
+    const setEventModal = (type, id = '') => {
+        var saveBtn = document.getElementById('todo-form-save');
+        saveBtn.replaceWith(saveBtn.cloneNode(true));
+        saveBtn = document.getElementById('todo-form-save');
+        if(type == 'add') {
+            saveBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                Feature.newTask();
+            });
+        } else if(type == 'edit') {
+            saveBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                Feature.editTask(id);
+            });
+        }
     }
 
     return {setEvents, toggleElement, setTemplate, resetForm, getProjectName, displayProjects, getTaskInfo, displayTasks}

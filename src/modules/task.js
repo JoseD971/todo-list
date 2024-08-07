@@ -6,7 +6,7 @@ var tasks = [
         project: 'all',
         title: 'Getting Started',
         description: `This application allows you to create to-do's and separate them by projects to organize your day.`,
-        dueDate: moment().format('DD-MM-YYYY'),
+        dueDate: moment().format('YYYY-MM-DD'),
         priority: 'low',
         completed: true,
     }
