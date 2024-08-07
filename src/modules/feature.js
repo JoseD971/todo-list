@@ -127,6 +127,7 @@ const Feature = (() => {
         var i = projects.indexOf(parentPro);
         projects[i].todos.push(task);
         openProject(currentList);
+        sortTasks('default');
         DOMStuff.resetForm('task');
         DOMStuff.closeElement('task');
     }
@@ -166,6 +167,31 @@ const Feature = (() => {
             }
         });
         openProject(currentList);
+    }
+
+    const sortTasks = (type) => {
+        var list = tasks.filter((x) => x.project == currentList);
+        switch (type) {
+            case 'default':
+                list = list.sort(function(a, b){
+                    return new Date(b.dueDate) - new Date(a.dueDate);
+                });
+                break;
+            case 'date asc':
+                list = list.sort(function(a, b){
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                });
+                break;
+            case 'name asc':
+                list = list.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'name desc':
+                list = list.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            default:
+                break;
+        }
+        DOMStuff.displayTasks(list);
     }
 
     const filter = (value) => {
@@ -215,7 +241,7 @@ const Feature = (() => {
         return found;
     }
 
-    return {all, today, week, important, completed, newProject, openProject, editProject, removeProject, newTask, editTask, changeTaskState, removeTask}
+    return {all, today, week, important, completed, newProject, openProject, editProject, removeProject, newTask, editTask, changeTaskState, removeTask, sortTasks}
 })();
 
 export default Feature;

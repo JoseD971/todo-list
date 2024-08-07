@@ -87,8 +87,9 @@ const DOMStuff = (() => {
                         <label for="sort">Sort by</label>
                         <select name="sort" id="sort">
                             <option value="default">Default</option>
-                            <option value="asc">Name Asc</option>
-                            <option value="desc">Name Desc</option>
+                            <option value="date asc">Date Asc</option>
+                            <option value="name asc">Name Asc</option>
+                            <option value="name desc">Name Desc</option>
                         </select>
                     </div>
                 </div>
@@ -210,7 +211,7 @@ const DOMStuff = (() => {
                 </div>
             `;
         });
-        if(list.length != 0) setTasksEvents();
+        setTasksEvents();
     }
 
     const setTasksEvents = () => {
@@ -220,6 +221,7 @@ const DOMStuff = (() => {
         const clsTodo = document.querySelector('#todo-modal .close-modal');
         const chckTaskBtns = document.getElementsByClassName('toggle-task-state');
         const removeTaskBtns = document.getElementsByClassName('remove-task');
+        const sort = document.getElementById('sort');
 
         for (let i = 0; i < editTaskBtns.length; i++) {
             let e = editTaskBtns[i];
@@ -245,6 +247,10 @@ const DOMStuff = (() => {
                 Feature.removeTask(e.getAttribute('task-id'));
             });
         }
+        sort.addEventListener('change', () => {
+            console.log("GG");
+            Feature.sortTasks(sort.value);
+        });
     }
 
     const expandEditModal = (id) => {
