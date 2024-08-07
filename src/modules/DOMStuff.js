@@ -72,7 +72,7 @@ const DOMStuff = (() => {
         } 
     }
 
-    const setTemplate = (title, number, filter) => {
+    const setTemplate = (title, number, filter, filterType = '') => {
         var content = document.getElementById('content');
         content.innerHTML = '';
         content.innerHTML = `
@@ -87,7 +87,7 @@ const DOMStuff = (() => {
                         <label for="sort">Sort by</label>
                         <select name="sort" id="sort">
                             <option value="default">Default</option>
-                            <option value="date asc">Date Asc</option>
+                            <option ${(filter == true && (filterType == 'today' || filterType == 'week')) ? 'hidden' : ''} value="date asc">Date Asc</option>
                             <option value="name asc">Name Asc</option>
                             <option value="name desc">Name Desc</option>
                         </select>
@@ -248,7 +248,6 @@ const DOMStuff = (() => {
             });
         }
         sort.addEventListener('change', () => {
-            console.log("GG");
             Feature.sortTasks(sort.value);
         });
     }

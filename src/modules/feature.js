@@ -12,20 +12,23 @@ const Feature = (() => {
         currentList = 'all';
         DOMStuff.setTemplate('All', tasks.length, true);
         DOMStuff.displayTasks(tasks);
+        sortTasks('default');
     }
 
     const today = () => {
         currentList = 'today';
         var today = search(moment().format('YYYY-MM-DD'));
-        DOMStuff.setTemplate('Today', today.length, true);
+        DOMStuff.setTemplate('Today', today.length, true, 'today');
         DOMStuff.displayTasks(today);
+        sortTasks('default');
     }
 
     const week = () => {
         currentList = 'week';
         var week = search(moment().week());
-        DOMStuff.setTemplate('This week', week.length, true);
+        DOMStuff.setTemplate('This week', week.length, true, 'week');
         DOMStuff.displayTasks(week);
+        sortTasks('default');
     }
 
     const important = () => {
@@ -33,6 +36,7 @@ const Feature = (() => {
         var important = search('high');
         DOMStuff.setTemplate('Important', important.length, true);
         DOMStuff.displayTasks(important);
+        sortTasks('default');
     }
 
     const completed = () => {
@@ -40,6 +44,7 @@ const Feature = (() => {
         var completed = search(true);
         DOMStuff.setTemplate('Completed', completed.length, true);
         DOMStuff.displayTasks(completed);
+        sortTasks('default');
     }
 
     const valideForm = (type) => {
@@ -170,7 +175,38 @@ const Feature = (() => {
     }
 
     const sortTasks = (type) => {
-        var list = tasks.filter((x) => x.project == currentList);
+        var filters = ['all', 'today', 'week', 'important', 'completed'];
+        var isFilter = false;
+        var list;
+        filters.forEach((x) => {
+            if(x == currentList) {
+                isFilter = true;
+            }
+        });
+        if(isFilter == false) {
+            list = tasks.filter((x) => x.project == currentList);
+        } else {
+            switch (currentList) {
+                case 'all':
+                    list = tasks;
+                    break;
+                case 'today':
+                    list = search(moment().format('YYYY-MM-DD'));
+                    break;
+                case 'week':
+                    list = search(true);
+                    break;
+                case 'important':
+                    list = search('high');
+                    break;
+                case 'completed':
+                    list = search();
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         switch (type) {
             case 'default':
                 list = list.sort(function(a, b){
@@ -189,6 +225,7 @@ const Feature = (() => {
                 list = list.sort((a, b) => b.title.localeCompare(a.title));
                 break;
             default:
+                console.log("GG");
                 break;
         }
         DOMStuff.displayTasks(list);
