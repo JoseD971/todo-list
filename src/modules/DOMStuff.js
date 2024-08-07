@@ -59,10 +59,16 @@ const DOMStuff = (() => {
     }
 
     const toggleElement = (type) => {
-        if(type == 'task') document.getElementById('todo-modal').close();
         if(type == 'project') {
             document.getElementById('project-panel').classList.toggle('hide');
             document.getElementById('project-name').focus();
+        } 
+    }
+
+    const closeElement = (type) => {
+        if(type == 'task') document.getElementById('todo-modal').close();
+        if(type == 'project') {
+            document.getElementById('project-panel').classList.add('hide');
         } 
     }
 
@@ -131,6 +137,7 @@ const DOMStuff = (() => {
         for (let i = 0; i < openProjBtns.length; i++) {
             let e = openProjBtns[i];
             e.addEventListener('click', () => {
+                closeElement('project');
                 Feature.openProject(e.getAttribute('project-id'));
             });
         }
@@ -183,26 +190,37 @@ const DOMStuff = (() => {
     }
 
     const displayTasks = (list) => {
+        if(list == undefined || list.length == 0) return;
         const tasksList = document.getElementById('list');
 
         tasksList.innerHTML = ``;
-        list.forEach((pr) => {
+        list.forEach((ts) => {
+            var pr = projects.find((x) => x.id == ts.project);
+            var prName;
+            (pr == undefined) ? prName = ts.project : prName = pr.name;
             tasksList.innerHTML += `
                 <div class="card">
-                    <input type="checkbox" ${(pr.completed == true) ? 'checked' : ''}>
-                    <p>${pr.title}</p>
-                    <button task-id="${pr.id}" title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
+                    <input class="toggle-task-state" task-id="${ts.id}" type="checkbox" ${(ts.completed == true) ? 'checked' : ''}>
+                    <p>${ts.title}</p>
+                    <span class="task-parent-project">from: ${prName}</span>
+                    <div class="action-task-buttons">
+                        <button task-id="${ts.id}" class="remove-task" title="Remove task"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg></button>
+                        <button task-id="${ts.id}" title="Expand task" class="expand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></button>
+                    </div>
                 </div>
             `;
         });
-
-        setTasksEvents();
+        if(list.length != 0) setTasksEvents();
     }
 
     const setTasksEvents = () => {
         const editTaskBtns = document.getElementsByClassName('expand');
         const todoModal = document.getElementById('todo-modal');
         const modalTitle = document.getElementById('modal-title');
+        const clsTodo = document.querySelector('#todo-modal .close-modal');
+        const chckTaskBtns = document.getElementsByClassName('toggle-task-state');
+        const removeTaskBtns = document.getElementsByClassName('remove-task');
+
         for (let i = 0; i < editTaskBtns.length; i++) {
             let e = editTaskBtns[i];
             e.addEventListener('click', () => {
@@ -212,6 +230,21 @@ const DOMStuff = (() => {
                 setEventModal('edit', e.getAttribute('task-id'));
             });
         }
+        clsTodo.addEventListener('click', () => {
+            todoModal.close();
+        });
+        for (let i = 0; i < chckTaskBtns.length; i++) {
+            let e = chckTaskBtns[i];
+            e.addEventListener('change', () => {
+                Feature.changeTaskState(e.getAttribute('task-id'), e.checked);
+            });
+        }
+        for (let i = 0; i < removeTaskBtns.length; i++) {
+            let e = removeTaskBtns[i];
+            e.addEventListener('click', () => {
+                Feature.removeTask(e.getAttribute('task-id'));
+            });
+        }
     }
 
     const expandEditModal = (id) => {
@@ -219,8 +252,6 @@ const DOMStuff = (() => {
         document.getElementById('todo-title').value = tks.title;
         document.getElementById('todo-priority').value = tks.priority;
         var date = document.getElementById('todo-due-date').value = moment(tks.dueDate).format('YYYY-MM-DD');
-        console.log(tks.dueDate);
-        console.log(date);
         document.getElementById('todo-description').value = tks.description;
         document.getElementById('todo-completed').checked = tks.completed;
     }
@@ -242,7 +273,7 @@ const DOMStuff = (() => {
         }
     }
 
-    return {setEvents, toggleElement, setTemplate, resetForm, getProjectName, displayProjects, getTaskInfo, displayTasks}
+    return {setEvents, toggleElement, closeElement, setTemplate, resetForm, getProjectName, displayProjects, getTaskInfo, displayTasks}
 })();
  
 export default DOMStuff;

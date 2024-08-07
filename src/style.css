@@ -301,9 +301,19 @@ dialog:-internal-dialog-in-top-layer::backdrop {
     border-bottom: 1px solid #c2c2c2;
 }
 
-.expand {
+.task-parent-project {
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: -10px;
+}
+
+.action-task-buttons {
+    margin-left: auto;
+}
+
+.expand, 
+.remove-task {
     align-items: center;
     width: 20px;
     height: 20px;
-    margin-left: auto;
 }

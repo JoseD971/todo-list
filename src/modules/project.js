@@ -2,14 +2,17 @@ var projects = [
     {
         id: 'personal',
         name: 'Personal',
+        todos: [],
     },
     {
         id: 'work',
         name: 'Work',
+        todos: [],
     },
     {
         id: 'life',
         name: 'Life',
+        todos: [],
     },
 ];
 
@@ -22,23 +25,10 @@ const Project = function() {
         properties = {
             id: Project._counter,
             name: name,
-            tasks: [],
+            todos: [],
         }
         projects.push(properties);
-        return {properties}
-    }
-
-    // const listAll = () => {
-    //     console.log(projects);
-    //     return projects;
-    // }
-
-    const addTask = () => {
-        
-    }
-
-    const removeTask = (id) => {
-
+        return properties;
     }
 
     return {create}

@@ -14,11 +14,10 @@ var tasks = [
 
 const Task = function () {   
     // ToDo.counter = ToDo.counter ? ToDo.counter + 1 : 1;
-    Task._counter = (Task._counter || 0) + 1;
-
     var properties = {}
 
     const create = (project, title, description, dueDate, priority, completed) => {
+        Task._counter = (Task._counter || 0) + 1;
         properties = {
             id: Task._counter,
             project: project,
@@ -30,18 +29,6 @@ const Task = function () {
         };
         tasks.push(properties);
         return properties;
-    }
-
-    const changeState = () => {
-
-    }
-
-    const changePriority = () => {
-
-    }
-
-    const listAll = () =>  {
-        
     }
 
     return {create}

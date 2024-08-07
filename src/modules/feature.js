@@ -2,6 +2,7 @@ import {Task, tasks} from './task.js';
 import {Project, projects} from './project.js';
 import DOMStuff from './DOMStuff.js';
 import moment from 'moment/moment.js';
+import { indexOf } from 'lodash';
 
 var currentList = 'today';
 
@@ -23,7 +24,6 @@ const Feature = (() => {
     const week = () => {
         currentList = 'week';
         var week = search(moment().week());
-        console.log(week);
         DOMStuff.setTemplate('This week', week.length, true);
         DOMStuff.displayTasks(week);
     }
@@ -74,9 +74,13 @@ const Feature = (() => {
     const openProject = (id) => {
         currentList = id;
         const pr = projects.find((x) => x.id == id);
-        var list = search(currentList);
-        DOMStuff.setTemplate(pr.name, list.length, false);
-        DOMStuff.displayTasks(list);
+        if (pr != undefined) {
+            var list = search(currentList);
+            DOMStuff.setTemplate(pr.name, list.length, false);
+            DOMStuff.displayTasks(list);
+        } else {
+            filter(currentList);
+        }
     }
 
     const editProject = (id) => {
@@ -100,21 +104,31 @@ const Feature = (() => {
                 if(x.id == currentList) {
                     today();
                 }
+                x.todos.forEach((t) => {
+                    if(t.project == x.id) {
+                        var i = tasks.indexOf(t);
+                        tasks.splice(i, 1);
+                    }
+                });
                 var i = projects.indexOf(x);
                 projects.splice(i, 1);
             }
         });
-        DOMStuff.toggleElement('project');
+        DOMStuff.closeElement('project');
         DOMStuff.displayProjects();
+        openProject(currentList);
     }
 
     const newTask = () => {
         if(!valideForm('task')) return;
         var info = DOMStuff.getTaskInfo();
-        Task().create(currentList, info.title, info.description, moment(info.dueDate).format('YYYY-MM-DD'), info.priority, info.taskChecked);
+        var task = Task().create(currentList, info.title, info.description, moment(info.dueDate).format('YYYY-MM-DD'), info.priority, info.taskChecked);
+        var parentPro = projects.find((x) => x.id == currentList);
+        var i = projects.indexOf(parentPro);
+        projects[i].todos.push(task);
         openProject(currentList);
         DOMStuff.resetForm('task');
-        DOMStuff.toggleElement('task');
+        DOMStuff.closeElement('task');
     }
 
     const editTask = (id) => {
@@ -126,14 +140,60 @@ const Feature = (() => {
         tasks[pr].dueDate = info.dueDate;
         tasks[pr].priority = info.priority;
         tasks[pr].completed = info.taskChecked;
-        openProject(currentList);
+        filter(currentList);
         DOMStuff.resetForm('task');
-        DOMStuff.toggleElement('task');
+        DOMStuff.closeElement('task');
+    }
+
+    const changeTaskState = (id, value) => {
+        let pr = tasks.findIndex((x) => x.id == id);
+        tasks[pr].completed = value;
+        filter(currentList);
+        DOMStuff.resetForm('task');
+        DOMStuff.closeElement('task');
+    }
+
+    const removeTask = (id) => {
+        let text = 'Sure you want to eliminate this task?';
+        if (confirm(text) != true) return;
+        tasks.forEach((x) => {
+            if(x.id == id) {
+                if(x.id == currentList) {
+                    today();
+                }
+                var i = tasks.indexOf(x);
+                tasks.splice(i, 1);
+            }
+        });
+        openProject(currentList);
+    }
+
+    const filter = (value) => {
+        switch (value) {
+            case 'all':
+                all();
+                break;
+            case 'today':
+                today();
+                break;
+            case 'week':
+                week();
+                break;
+            case 'important':
+                important();
+                break;
+            case 'completed':
+                completed();
+                break;
+            default:
+                openProject(value);
+                break;
+        }
     }
 
     const search = (value) => {
         var found;
- 
+
         switch (currentList) {
             case 'today':
                 found = tasks.filter((x) => x.dueDate == value);
@@ -155,7 +215,7 @@ const Feature = (() => {
         return found;
     }
 
-    return {all, today, week, important, completed, newProject, openProject, editProject, removeProject, newTask, editTask}
+    return {all, today, week, important, completed, newProject, openProject, editProject, removeProject, newTask, editTask, changeTaskState, removeTask}
 })();
 
 export default Feature;
