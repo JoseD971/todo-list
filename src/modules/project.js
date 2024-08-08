@@ -1,20 +1,7 @@
-var projects = [
-    {
-        id: 'personal',
-        name: 'Personal',
-        todos: [],
-    },
-    {
-        id: 'work',
-        name: 'Work',
-        todos: [],
-    },
-    {
-        id: 'life',
-        name: 'Life',
-        todos: [],
-    },
-];
+import LocalStorageController from "./localStorage";
+import { Task } from "./task";
+
+var projects = [];
 
 const Project = function() {
 
@@ -28,10 +15,54 @@ const Project = function() {
             todos: [],
         }
         projects.push(properties);
+        saveLS(projects);
         return properties;
     }
 
-    return {create}
+    const setGeneric = () => {
+        var generics = [
+            {
+                id: 'personal',
+                name: 'Personal',
+                todos: [],
+            },
+            {
+                id: 'work',
+                name: 'Work',
+                todos: [],
+            },
+            {
+                id: 'life',
+                name: 'Life',
+                todos: [],
+            },
+        ];
+        LocalStorageController.storage('projects', generics);
+        Task().setGenericTasks();
+    }
+
+    const getStorage = () => {
+        if(LocalStorageController.isFirstTime()) {
+            setGeneric();
+        };
+        var storedInfo = LocalStorageController.search('projects');
+        if(storedInfo == false) {
+            projects = projects;
+        } else {
+            projects = storedInfo;
+        }
+        console.log(projects);
+    }
+
+    const saveLS = (value) => {
+        LocalStorageController.storage('projects', value);
+    }
+
+    // const updateLS = (value) => {
+    //     LocalStorageController.remove('projects', value);
+    // }
+
+    return {create, getStorage, saveLS}
 }
 
 export {Project, projects};

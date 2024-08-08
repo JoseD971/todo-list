@@ -1,6 +1,6 @@
 import Feature from "./feature.js";
-import {projects} from "./project.js";
-import {tasks} from "./task.js";
+import {Project, projects} from "./project.js";
+import {Task, tasks} from "./task.js";
 import moment from "moment";
 
 const DOMStuff = (() => {
@@ -113,7 +113,8 @@ const DOMStuff = (() => {
 
     const displayProjects = () => {
         const projectsList = document.getElementById('projects-list');
-
+        Project().getStorage();
+        Task().getStorage();
         projectsList.innerHTML = ``;
         projects.forEach((pr) => {
             projectsList.innerHTML += `
@@ -126,7 +127,6 @@ const DOMStuff = (() => {
                 </li>
             `;
         });
-
         setProjectEvents();
     }
 

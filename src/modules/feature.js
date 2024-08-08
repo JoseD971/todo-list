@@ -2,7 +2,6 @@ import {Task, tasks} from './task.js';
 import {Project, projects} from './project.js';
 import DOMStuff from './DOMStuff.js';
 import moment from 'moment/moment.js';
-import { indexOf } from 'lodash';
 
 var currentList = 'today';
 
@@ -96,6 +95,7 @@ const Feature = (() => {
         if(currentList == projects[pr].id) {
             openProject(projects[pr].id);
         }
+        updateLocalStorage();
         DOMStuff.displayProjects();
         DOMStuff.resetForm('project');
         DOMStuff.toggleElement('project');
@@ -120,6 +120,7 @@ const Feature = (() => {
             }
         });
         DOMStuff.closeElement('project');
+        updateLocalStorage();
         DOMStuff.displayProjects();
         openProject(currentList);
     }
@@ -131,6 +132,7 @@ const Feature = (() => {
         var parentPro = projects.find((x) => x.id == currentList);
         var i = projects.indexOf(parentPro);
         projects[i].todos.push(task);
+        updateLocalStorage();
         openProject(currentList);
         sortTasks('default');
         DOMStuff.resetForm('task');
@@ -146,6 +148,7 @@ const Feature = (() => {
         tasks[pr].dueDate = info.dueDate;
         tasks[pr].priority = info.priority;
         tasks[pr].completed = info.taskChecked;
+        updateLocalStorage();
         filter(currentList);
         DOMStuff.resetForm('task');
         DOMStuff.closeElement('task');
@@ -154,6 +157,7 @@ const Feature = (() => {
     const changeTaskState = (id, value) => {
         let pr = tasks.findIndex((x) => x.id == id);
         tasks[pr].completed = value;
+        updateLocalStorage();
         filter(currentList);
         DOMStuff.resetForm('task');
         DOMStuff.closeElement('task');
@@ -171,7 +175,15 @@ const Feature = (() => {
                 tasks.splice(i, 1);
             }
         });
+        updateLocalStorage();
         openProject(currentList);
+    }
+
+    const updateLocalStorage = () => {
+        Project().saveLS(projects);
+        Task().saveLS(tasks);
+        Project().getStorage();
+        Task().getStorage();
     }
 
     const sortTasks = (type) => {
