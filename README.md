@@ -27,3 +27,7 @@ Implementing the Single-responsibility principle in a javascript project.
 1. Clone the repository
 2. Run `npm install` to install dependencies
 3. Run `npm run build` to build the project
+
+## Live Demo
+
+[View the live demo here](https://josed971.github.io/todo-list/) or copy and paste this link: https://josed971.github.io/todo-list/
