@@ -38,7 +38,7 @@ const Project = function() {
             },
         ];
         LocalStorageController.storage('projects', generics);
-        Task().setGenericTasks();
+        Task().setGeneric();
     }
 
     const getStorage = () => {
